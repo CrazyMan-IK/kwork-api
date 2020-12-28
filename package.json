@@ -1,0 +1,36 @@
+{
+  "name": "kwork-api",
+  "version": "1.0.5",
+  "description": "Kwork api wrapper",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/CrazyMan-IK/kwork-api.git"
+  },
+  "scripts": {
+    "debug": "ts-node index.ts",
+    "build": "rm -rf ./build && tsc",
+    "start": "yarn -s format && yarn -s lint && yarn -s build && node ./build/index.js",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "format:watch": "onchange 'src/**/*.ts' -- yarn -s format"
+  },
+  "dependencies": {
+    "axios": "^0.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.9",
+    "@typescript-eslint/eslint-plugin": "^4.9.1",
+    "@typescript-eslint/parser": "^4.9.1",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "onchange": "^7.1.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.2"
+  },
+  "files": [
+    "index.js"
+  ]
+}
