@@ -117,3 +117,4 @@ dist
 
 deploy.zsh
 build/
+test/

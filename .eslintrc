@@ -12,7 +12,9 @@
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": 2,
+    "prettier/prettier": ["error", {
+      "endOfLine": "crlf"
+    }],
     "@typescript-eslint/no-explicit-any": 0
   }
 }

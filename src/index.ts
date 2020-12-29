@@ -57,7 +57,7 @@ class Kwork {
     return null;
   }
 
-  public async getMe(): Promise<User>
+  public async getMe(): Promise<User>;
 }
 
 module.exports = Kwork;
