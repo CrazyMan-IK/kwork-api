@@ -1,5 +1,5 @@
 import axios, { Method, AxiosInstance } from 'axios';
-import { User } from './common/types';
+import { Int, Pagination, KworkUser, Category, Project } from './common/types';
 
 class Kwork {
   public login: string;
@@ -21,7 +21,7 @@ class Kwork {
     });
   }
 
-  public get token(): Promise<string | null | undefined> {
+  public get token(): Promise<string | null> {
     return (async () => {
       if (this._token == null || this._token == undefined) {
         this._token = await this.getToken();
@@ -31,7 +31,7 @@ class Kwork {
     })();
   }
 
-  public async apiRequest(requestMethod: Method, apiMethod: string, params?: unknown): Promise<any | null> {
+  public async apiRequest(requestMethod: Method, apiMethod: string, params?: unknown): Promise<any> {
     const resp = await this._session.request({ method: requestMethod, url: apiMethod, params: params });
 
     if (resp.status == 200) {
@@ -42,7 +42,7 @@ class Kwork {
     return null;
   }
 
-  public async getToken(): Promise<string | null | undefined> {
+  public async getToken(): Promise<string | null> {
     let resp = await this.apiRequest('post', 'signIn', { login: this.login, password: this.password });
 
     if (resp?.error_code == '192') {
@@ -57,7 +57,30 @@ class Kwork {
     return null;
   }
 
-  public async getMe(): Promise<User>;
+  public async getMe(): Promise<KworkUser> {
+    const resp = await this.apiRequest('post', 'actor', { token: await this.token });
+
+    return resp.response;
+  }
+
+  public async getFavouriteCategories(): Promise<Category[]> {
+    const resp = await this.apiRequest('post', 'favoriteCategories', { token: await this.token });
+
+    return resp.response;
+  }
+
+  public async getProjects(categories: Int[] = [], page: Int = <Int>0): Promise<{ response?: Project[]; paging?: Pagination }> {
+    const resp = await this.apiRequest('post', 'projects', { token: await this.token, categories: categories.join(','), page });
+
+    if (resp.paging.pages > 1 && page == 0) {
+      for (let i = 2; i <= resp.paging.pages; i++) {
+        const newResp = await this.apiRequest('post', 'projects', { token: await this.token, categories: categories.join(','), page: i });
+        resp.response.push(...newResp.response);
+      }
+    }
+
+    return resp;
+  }
 }
 
 module.exports = Kwork;
