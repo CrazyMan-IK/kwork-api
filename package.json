@@ -12,7 +12,7 @@
     "dev": "nodemon .",
     "debug": "ts-node ./src/index.ts",
     "build": "rimraf ./build && tsc",
-    "start": "yarn -s format && yarn -s lint && yarn -s build && node ./build/index.js",
+    "test": "yarn -s format && yarn -s lint && yarn -s build && node ./test/index.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --config .prettierrc \"./src/**/*.ts\" --write",
     "format:watch": "onchange \"./src/**/*.ts\" -- yarn -s format"

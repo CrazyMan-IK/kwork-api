@@ -1,5 +1,9 @@
-function getToken(): string {
-  return 'Token';
+class Kwork {
+  constructor(private login: string, private password: string) {}
+
+  getToken(): string {
+    return 'Token';
+  }
 }
 
-exports.getToken = getToken;
+module.exports = Kwork;
