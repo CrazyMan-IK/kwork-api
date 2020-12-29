@@ -1,5 +1,7 @@
 const kwork = require('../build/index.js');
 
-let kw = new kwork('Login', 'Password');
+let kw = new kwork('Superdanik2004@gmail.com', 'Smile2299', '3506');
 
-console.log(kw.getToken());
+(async function() {
+	console.log(await kw.token);
+})();
