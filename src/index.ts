@@ -1,10 +1,13 @@
 import axios, { Method, AxiosInstance } from 'axios';
+import { SimpleEventDispatcher, ISimpleEvent } from 'strongly-typed-events';
 import { Int, Pagination, KworkUser, Category, Project } from './common/types';
 
 class Kwork {
   public login: string;
   public password: string;
   public phone: string;
+
+  private _onNewProject: SimpleEventDispatcher<Project> = new SimpleEventDispatcher<Project>();
 
   private _token?: string | null;
   private _session: AxiosInstance;
@@ -23,13 +26,28 @@ class Kwork {
 
     this.getProjects().then((x) => (this._lastProjects = x.response));
 
-    setInterval(this.updateProjects, 10000, this);
+    setInterval(this.updateProjects.bind(this), 10000);
   }
 
-  private async updateProjects(ths: Kwork): Promise<void> {
-    const currentProjects = (await ths.getProjects()).response;
+  private async updateProjects(): Promise<void> {
+    const currentProjects = (await this.getProjects()).response;
 
-    ths._lastProjects = currentProjects;
+    const lastProjects = this._lastProjects?.map((x) => x.id);
+
+    const newProjects = currentProjects?.filter((x) => !lastProjects?.includes(x.id));
+
+    if (newProjects != undefined) {
+      for (const project of newProjects) {
+        this._onNewProject.dispatch(project);
+      }
+      //console.log(newProjects.length);
+    }
+
+    this._lastProjects = currentProjects;
+  }
+
+  public get onNewProject(): ISimpleEvent<Project> {
+    return this._onNewProject.asEvent();
   }
 
   public get token(): Promise<string | null> {

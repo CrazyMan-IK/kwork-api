@@ -18,7 +18,8 @@
     "format:watch": "onchange \"./src/**/*.ts\" -- yarn -s format"
   },
   "dependencies": {
-    "axios": "^0.21.0"
+    "axios": "^0.21.0",
+    "strongly-typed-events": "^2.0.6"
   },
   "devDependencies": {
     "@types/node": "^14.14.9",
