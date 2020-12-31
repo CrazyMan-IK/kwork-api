@@ -8,6 +8,7 @@ class Kwork {
 
   private _token?: string | null;
   private _session: AxiosInstance;
+  private _lastProjects?: Project[];
 
   public constructor(login: string, password: string, phone: string) {
     this.login = login;
@@ -19,6 +20,16 @@ class Kwork {
       baseURL: 'https://api.kwork.ru/',
       headers: { Authorization: 'Basic bW9iaWxlX2FwaTpxRnZmUmw3dw==' }
     });
+
+    this.getProjects().then((x) => (this._lastProjects = x.response));
+
+    setInterval(this.updateProjects, 10000, this);
+  }
+
+  private async updateProjects(ths: Kwork): Promise<void> {
+    const currentProjects = (await ths.getProjects()).response;
+
+    ths._lastProjects = currentProjects;
   }
 
   public get token(): Promise<string | null> {
