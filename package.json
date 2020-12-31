@@ -1,6 +1,6 @@
 {
   "name": "kwork-api",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "Kwork api wrapper",
   "main": "index.js",
   "license": "MIT",
@@ -34,6 +34,7 @@
     "typescript": "^4.1.2"
   },
   "files": [
-    "index.js"
+    "build/index.js",
+    "build/common/types.js"
   ]
 }
