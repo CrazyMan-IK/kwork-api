@@ -16,7 +16,7 @@ npm install git+https://github.com/CrazyMan-IK/kwork-api.git
 
 ## Обзор
 
-Список доступных методов можно посмотреть [здесь](./api_example.js)
+Список доступных методов можно посмотреть [здесь](./examples/api_example.js)
 
 Пример простого api запроса:
 
