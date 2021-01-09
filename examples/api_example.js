@@ -1,5 +1,6 @@
 const kwork = require('kwork-api');
 
+//Третьим параметром являются последние 4 цифры номера телефона аккаунта
 let kw = new kwork('login', 'password', '0000');
 
 (async function () {
