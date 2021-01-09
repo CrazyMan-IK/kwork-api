@@ -1,6 +1,6 @@
 {
   "name": "kwork-api",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Kwork api wrapper",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -9,6 +9,10 @@
     "type": "git",
     "url": "https://github.com/CrazyMan-IK/kwork-api.git"
   },
+  "keywords": [
+    "api",
+    "kwork-api"
+  ],
   "scripts": {
     "dev": "nodemon .",
     "debug": "ts-node ./src/index.ts",
