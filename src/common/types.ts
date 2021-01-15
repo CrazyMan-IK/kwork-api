@@ -586,6 +586,18 @@ interface KworkUser {
   [k: string]: unknown;
 }
 
+interface ExchangeInfo {
+  /**
+   * Количество моих откликов на бирже
+   */
+  exchange_response_count?: number;
+  /**
+   * Количество заархивированных проектов
+   */
+  archived_count?: number;
+  [k: string]: unknown;
+}
+
 interface Category {
   /**
    * ID категории
@@ -750,4 +762,4 @@ interface ResponseWithPagination<T> {
   [k: string]: unknown;
 }
 
-export { Int, Response, Pagination, ResponseWithPagination, KworkUser, Category, Project };
+export { Int, Response, Pagination, ResponseWithPagination, KworkUser, Category, ExchangeInfo, Project };
