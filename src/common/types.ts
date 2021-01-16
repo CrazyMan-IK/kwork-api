@@ -586,15 +586,303 @@ interface KworkUser {
   [k: string]: unknown;
 }
 
-interface ExchangeInfo {
+interface WorkerOrders {
   /**
-   * Количество моих откликов на бирже
+   * Выбранный фильтр
    */
-  exchange_response_count?: number;
+  filter?: string;
   /**
-   * Количество заархивированных проектов
+   * Объект количеств по статусам
    */
-  archived_count?: number;
+  filter_counts?: {
+    /**
+     * Количество заказов по фильтру active
+     */
+    active?: number;
+    /**
+     * Количество заказов по фильтру cancelled
+     */
+    cancelled?: string;
+    /**
+     * Количество заказов по фильтру delivered
+     */
+    delivered?: string;
+    /**
+     * Количество заказов по фильтру completed
+     */
+    completed?: string;
+    /**
+     * Общее количество заказов
+     */
+    all?: string;
+    [k: string]: unknown;
+  };
+  /**
+   * Массив объектов - заказов
+   */
+  orders?: {
+    /**
+     * Идентификатор заказа
+     */
+    id?: number;
+    /**
+     * Название кворка
+     */
+    kwork_title?: string;
+    /**
+     * Пользовательское название заказа
+     */
+    display_title?: string;
+    /**
+     * Цена
+     */
+    price?: number;
+    /**
+     * Статус заказа 	1 - В работе, 2 - Арбитраж, 3 - Отменен, 4 - На проверке, 5 - Выполнен, 6 - Требуется оплата
+     */
+    status?: 1 | 2 | 3 | 4 | 5 | 6;
+    /**
+     * Дата заказа UNIXTIME
+     */
+    time_added?: number;
+    /**
+     * Дата отмены заказа UNIXTIME
+     */
+    time_canсel?: number;
+    /**
+     * Запрос
+     */
+    project?: string;
+    /**
+     * Осталось времени, значимо только для заказов в статусе 1 - В работе (Если пусто - Время вышло, 	Если in_work = 1 - Осталось на выполнение заказа, Если in_work = 0 - Осталось до автоотмены заказа)
+     */
+    time_left?: string;
+    /**
+     * Взят в работу
+     */
+    in_work?: boolean;
+    /**
+     * 1 - остался час, чтобы взять заказ в работу, так как прошло 23 часа с момента оплаты, 0 - осталось более часа, чтобы взять заказ, так как прошло менее 23 часа с момента оплаты, 1 - все остальные заказы, которые не требуется брать в работу. -2 - заказ не сдан вовремя
+     */
+    time_is_lost?: -2 | 0 | 1;
+    /**
+     * Заказ в состоянии запроса отмены (показывать сколько времени осталось на выполнение не нужно) Только для заказов в статусе 1 - В работе
+     */
+    is_cancel_request?: boolean;
+    /**
+     * Время выполнения заказа в секундах
+     */
+    duration?: number;
+    /**
+     * Дата сдачи заказа в UNIXTIME
+     */
+    deadline?: number;
+    /**
+     * Можно загрузить портфолио к заказу
+     */
+    can_add_portfolio?: boolean;
+    /**
+     * Причина отмены заказа
+     */
+    canсel_reason?: string;
+    /**
+     * Количество непрочитанных сообщений в заказе
+     */
+    unread_tracks?: number;
+    /**
+     * Объект данных заказчика
+     */
+    payer?: {
+      /**
+       * Идентификатор
+       */
+      id?: number;
+      /**
+       * Имя пользователя
+       */
+      username?: string;
+      /**
+       * Онлайн ли пользователь
+       */
+      is_online?: boolean;
+      /**
+       * Ссылка на изображение аватара
+       */
+      profilepicture?: string;
+      [k: string]: unknown;
+    };
+    /**
+     * Путь к обложке кворка
+     */
+    photo?: string;
+    [k: string]: unknown;
+  };
+  /**
+   * Объект данных пагинации
+   */
+  paging?: {
+    /**
+     * Текущая страница
+     */
+    page?: number;
+    /**
+     * Общее количество заказов по текущему фильтру
+     */
+    total?: number;
+    /**
+     * Количество элементов на странице
+     */
+    limit?: number;
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+
+interface PayerOrders {
+  /**
+   * Выбранный фильтр
+   */
+  filter?: string;
+  /**
+   * Объект количеств по статусам
+   */
+  filter_counts?: {
+    /**
+     * Количество заказов по фильтру active
+     */
+    active?: number;
+    /**
+     * Количество заказов по фильтру cancelled
+     */
+    cancelled?: string;
+    /**
+     * Количество заказов по фильтру delivered
+     */
+    delivered?: string;
+    /**
+     * Количество заказов по фильтру completed
+     */
+    completed?: string;
+    /**
+     * Общее количество заказов
+     */
+    all?: string;
+    [k: string]: unknown;
+  };
+  /**
+   * Массив объектов - заказов
+   */
+  orders?: {
+    /**
+     * Идентификатор заказа
+     */
+    id?: number;
+    /**
+     * Название кворка
+     */
+    kwork_title?: string;
+    /**
+     * Пользовательское название заказа
+     */
+    display_title?: string;
+    /**
+     * Цена
+     */
+    price?: number;
+    /**
+     * Статус заказа 	1 - В работе, 2 - Арбитраж, 3 - Отменен, 4 - На проверке, 5 - Выполнен, 6 - Требуется оплата
+     */
+    status?: 1 | 2 | 3 | 4 | 5 | 6;
+    /**
+     * Дата заказа UNIXTIME
+     */
+    time_added?: number;
+    /**
+     * Время для показа заказа UNIXTIME, При фильтре Выполненные - дата сдачи заказа на проверку (она же дата выполнения), При фильтре Отмененные - дата отмены заказа, В остальных случаях - дата создания заказа
+     */
+    display_time?: number;
+    /**
+     * Запрос
+     */
+    project?: string;
+    /**
+     * Можно добавить отзыв
+     */
+    can_add_review?: boolean;
+    /**
+     * Причина отмены заказа
+     */
+    canсel_reason?: string;
+    /**
+     * Идентификатор кворка
+     */
+    kwork_id?: number;
+    /**
+     * Можно ли заказать еще
+     */
+    can_repeat_order?: boolean;
+    /**
+     * Количество непрочитанных сообщений в заказе
+     */
+    unread_tracks?: number;
+    /**
+     * Взят в работу
+     */
+    in_work?: boolean;
+    /**
+     * Заказ в состоянии запроса отмены (показывать сколько времени осталось на выполнение не нужно) Только для заказов в статусе 1 - В работе
+     */
+    is_cancel_request?: boolean;
+    /**
+     * Данные не предоставлены
+     */
+    missing_data?: boolean;
+    /**
+     * Объект данных продавца
+     */
+    worker?: {
+      /**
+       * Идентификатор
+       */
+      id?: number;
+      /**
+       * Имя пользователя
+       */
+      username?: string;
+      /**
+       * Онлайн ли пользователь
+       */
+      is_online?: boolean;
+      /**
+       * Ссылка на изображение аватара
+       */
+      profilepicture?: string;
+      [k: string]: unknown;
+    };
+    /**
+     * Путь к обложке кворка
+     */
+    photo?: string;
+    [k: string]: unknown;
+  };
+  /**
+   * Объект данных пагинации
+   */
+  paging?: {
+    /**
+     * Текущая страница
+     */
+    page?: number;
+    /**
+     * Общее количество заказов по текущему фильтру
+     */
+    total?: number;
+    /**
+     * Количество элементов на странице
+     */
+    limit?: number;
+    [k: string]: unknown;
+  };
   [k: string]: unknown;
 }
 
@@ -610,157 +898,17 @@ interface Category {
   [k: string]: unknown;
 }
 
-interface WorkerOrders {
-    /**
-     * Выбранный фильтр
-     */
-    filter?: string;
-    /**
-     * Объект количеств по статусам
-     */
-    filter_counts?: {
-      /**
-       * Количество заказов по фильтру active
-       */
-      active?: number;
-      /**
-       * Количество заказов по фильтру cancelled
-       */
-      cancelled?: string;
-      /**
-       * Количество заказов по фильтру delivered
-       */
-      delivered?: string;
-      /**
-       * Количество заказов по фильтру completed
-       */
-      completed?: string;
-      /**
-       * Общее количество заказов
-       */
-      all?: string;
-      [k: string]: unknown;
-    };
-    /**
-     * Массив объектов - заказов
-     */
-    orders?: {
-      /**
-       * Идентификатор заказа
-       */
-      id?: number;
-      /**
-       * Название кворка
-       */
-      kwork_title?: string;
-      /**
-       * Пользовательское название заказа
-       */
-      display_title?: string;
-      /**
-       * Цена
-       */
-      price?: number;
-      /**
-       * Статус заказа 	1 - В работе, 2 - Арбитраж, 3 - Отменен, 4 - На проверке, 5 - Выполнен, 6 - Требуется оплата
-       */
-      status?: number;
-      /**
-       * Дата заказа UNIXTIME
-       */
-      time_added?: number;
-      /**
-       * Дата отмены заказа UNIXTIME
-       */
-      time_canсel?: number;
-      /**
-       * Запрос
-       */
-      project?: string;
-      /**
-       * Осталось времени, значимо только для заказов в статусе 1 - В работе (Если пусто - Время вышло, 	Если in_work = 1 - Осталось на выполнение заказа, Если in_work = 0 - Осталось до автоотмены заказа)
-       */
-      time_left?: string;
-      /**
-       * Взят в работу
-       */
-      in_work?: boolean;
-      /**
-       * 1 - остался час, чтобы взять заказ в работу, так как прошло 23 часа с момента оплаты, 0 - осталось более часа, чтобы взять заказ, так как прошло менее 23 часа с момента оплаты, 1 - все остальные заказы, которые не требуется брать в работу. -2 - заказ не сдан вовремя
-       */
-      time_is_lost?: number;
-      /**
-       * Заказ в состоянии запроса отмены (показывать сколько времени осталось на выполнение не нужно) Только для заказов в статусе 1 - В работе
-       */
-      is_cancel_request?: boolean;
-      /**
-       * Время выполнения заказа в секундах
-       */
-      duration?: number;
-      /**
-       * Дата сдачи заказа в UNIXTIME
-       */
-      deadline?: number;
-      /**
-       * Можно загрузить портфолио к заказу
-       */
-      can_add_portfolio?: boolean;
-      /**
-       * Причина отмены заказа
-       */
-      canсel_reason?: string;
-      /**
-       * Количество непрочитанных сообщений в заказе
-       */
-      unread_tracks?: number;
-      /**
-       * Объект данных заказчика
-       */
-      payer?: {
-        /**
-         * Идентификатор
-         */
-        id?: number;
-        /**
-         * Имя пользователя
-         */
-        username?: string;
-        /**
-         * Онлайн ли пользователь
-         */
-        is_online?: boolean;
-        /**
-         * Ссылка на изображение аватара
-         */
-        profilepicture?: string;
-        [k: string]: unknown;
-      };
-      /**
-       * Путь к обложке кворка
-       */
-      photo?: string;
-      [k: string]: unknown;
-    };
-    /**
-     * Объект данных пагинации
-     */
-    paging?: {
-      /**
-       * Текущая страница
-       */
-      page?: number;
-      /**
-       * Общее количество заказов по текущему фильтру
-       */
-      total?: number;
-      /**
-       * Количество элементов на странице
-       */
-      limit?: number;
-      [k: string]: unknown;
-    };
-    [k: string]: unknown;
-  }
+interface ExchangeInfo {
+  /**
+   * Количество моих откликов на бирже
+   */
+  exchange_response_count?: number;
+  /**
+   * Количество заархивированных проектов
+   */
+  archived_count?: number;
+  [k: string]: unknown;
+}
 
 interface Achievement {
   /**
@@ -914,4 +1062,4 @@ interface ResponseWithPagination<T> {
   [k: string]: unknown;
 }
 
-export { Int, Response, Pagination, ResponseWithPagination, KworkUser, Category, ExchangeInfo, Project };
+export { Int, Response, Pagination, ResponseWithPagination, KworkUser, WorkerOrders, PayerOrders, Category, ExchangeInfo, Project };

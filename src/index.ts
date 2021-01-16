@@ -1,6 +1,6 @@
 import axios, { Method, AxiosInstance } from 'axios';
 import { SimpleEventDispatcher, ISimpleEvent } from 'strongly-typed-events';
-import { Int, Pagination, KworkUser, Category, ExchangeInfo, Project } from './common/types';
+import { Int, Pagination, KworkUser, WorkerOrders, PayerOrders, Category, ExchangeInfo, Project } from './common/types';
 
 class Kwork {
   public login: string;
@@ -96,6 +96,32 @@ class Kwork {
     const resp = await this.apiRequest('post', 'user', { id });
 
     return resp.response;
+  }
+
+  public async getWorkerOrders(filter: 'active' | 'cancelled' | 'delivered' | 'unpaid' | 'all' = 'all', page: Int = <Int>0): Promise<WorkerOrders> {
+    const resp = await this.apiRequest('post', 'workerOrders', { token: await this.token, filter, page });
+
+    if ((resp.response.paging.pages ?? 0) > 1 && page == 0) {
+      for (let i = 2; i <= resp.response.paging.pages; i++) {
+        const newResp = await this.apiRequest('post', 'workerOrders', { token: await this.token, filter, page: i });
+        resp.response.push(...newResp.response);
+      }
+    }
+
+    return resp;
+  }
+
+  public async getPayerOrders(filter: 'active' | 'cancelled' | 'delivered' | 'unpaid' | 'all' = 'all', page: Int = <Int>0): Promise<PayerOrders> {
+    const resp = await this.apiRequest('post', 'payerOrders', { token: await this.token, filter, page });
+
+    if ((resp.response.paging.pages ?? 0) > 1 && page == 0) {
+      for (let i = 2; i <= resp.response.paging.pages; i++) {
+        const newResp = await this.apiRequest('post', 'payerOrders', { token: await this.token, filter, page: i });
+        resp.response.push(...newResp.response);
+      }
+    }
+
+    return resp;
   }
 
   public async getFavouriteCategories(): Promise<Category[]> {
