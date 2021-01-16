@@ -24,7 +24,10 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
-    "strongly-typed-events": "^2.0.6"
+    "axios-socks5-agent": "^1.0.1",
+    "socks-proxy-agent": "^5.0.0",
+    "strongly-typed-events": "^2.0.6",
+    "tunnel": "^0.0.6"
   },
   "devDependencies": {
     "@types/node": "^14.14.9",
