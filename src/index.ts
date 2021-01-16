@@ -1,6 +1,6 @@
 import axios, { Method, AxiosInstance } from 'axios';
 import { SimpleEventDispatcher, ISimpleEvent } from 'strongly-typed-events';
-import { Int, Pagination, KworkUser, Category, Project } from './common/types';
+import { Int, Pagination, KworkUser, Category, ExchangeInfo, Project } from './common/types';
 
 class Kwork {
   public login: string;
@@ -92,8 +92,20 @@ class Kwork {
     return resp.response;
   }
 
+  public async getUser(id: Int): Promise<KworkUser> {
+    const resp = await this.apiRequest('post', 'user', { id });
+
+    return resp.response;
+  }
+
   public async getFavouriteCategories(): Promise<Category[]> {
     const resp = await this.apiRequest('post', 'favoriteCategories', { token: await this.token });
+
+    return resp.response;
+  }
+
+  public async getExchangeInfo(): Promise<ExchangeInfo[]> {
+    const resp = await this.apiRequest('post', 'exchangeInfo', { token: await this.token });
 
     return resp.response;
   }
