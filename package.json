@@ -16,15 +16,17 @@
   "scripts": {
     "dev": "nodemon .",
     "debug": "ts-node ./src/index.ts",
-    "build": "rimraf ./build && tsc",
+    "build": "rimraf ./build; tsc",
     "test": "yarn -s format && yarn -s lint && yarn -s build && node ./test/index.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --config .prettierrc \"./src/**/*.ts\" --write",
     "format:watch": "onchange \"./src/**/*.ts\" -- yarn -s format"
   },
   "dependencies": {
+    "@types/node-persist": "^3.1.1",
     "axios": "^0.21.0",
     "axios-socks5-agent": "^1.0.1",
+    "node-persist": "^3.1.0",
     "socks-proxy-agent": "^5.0.0",
     "strongly-typed-events": "^2.0.6",
     "tunnel": "^0.0.6"

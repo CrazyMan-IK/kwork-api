@@ -1,4 +1,6 @@
+import storage from 'node-persist';
 import axios, { Method, AxiosInstance } from 'axios';
+import { SocksProxyAgent } from 'socks-proxy-agent';
 import { SimpleEventDispatcher, ISimpleEvent } from 'strongly-typed-events';
 import { Int, Pagination, KworkUser, WorkerOrders, PayerOrders, Category, ExchangeInfo, Project } from './common/types';
 
@@ -13,15 +15,30 @@ class Kwork {
   private _session: AxiosInstance;
   private _lastProjects?: Project[];
 
-  public constructor(login: string, password: string, phone: string) {
+  public constructor(login: string, password: string, phone: string, proxy: string | undefined = undefined) {
     this.login = login;
     this.password = password;
     this.phone = phone;
 
+    storage
+      .init({
+        dir: 'kwork-api-storage'
+      })
+      .then(async () => {
+        const token = await storage.getItem('token');
+
+        if (token != undefined) {
+          this._token = token;
+        }
+      });
+
+    const httpsAgent = proxy === undefined ? undefined : new SocksProxyAgent(proxy);
+
     this._token = null;
     this._session = axios.create({
       baseURL: 'https://api.kwork.ru/',
-      headers: { Authorization: 'Basic bW9iaWxlX2FwaTpxRnZmUmw3dw==' }
+      headers: { Authorization: 'Basic bW9iaWxlX2FwaTpxRnZmUmw3dw==' },
+      httpsAgent
     });
 
     this.getProjects().then((x) => (this._lastProjects = x.response));
@@ -54,6 +71,7 @@ class Kwork {
     return (async () => {
       if (this._token == null || this._token == undefined) {
         this._token = await this.getToken();
+        await storage.setItem('token', this._token);
       }
 
       return this._token;
