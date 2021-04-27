@@ -1,4 +1,5 @@
 import storage from 'node-persist';
+import { client, connection, IMessage } from 'websocket';
 import axios, { Method, AxiosInstance } from 'axios';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { SimpleEventDispatcher, ISimpleEvent } from 'strongly-typed-events';
@@ -13,6 +14,7 @@ class Kwork {
 
   private _token?: string | null;
   private _session: AxiosInstance;
+  private _socket: client;
   private _lastProjects?: Project[];
 
   public constructor(login: string, password: string, phone: string, proxy: string | undefined = undefined) {
@@ -41,9 +43,19 @@ class Kwork {
       httpsAgent
     });
 
+    this._socket = new client();
+    this._socket.on('connect', (connection: connection) => {
+      connection.on('message', this.onMessageReceived.bind(this));
+    });
+    this._socket.connect(`wss://notice.kwork.ru/ws/public/{this.getChannel()}`);
+
     this.getProjects().then((x) => (this._lastProjects = x.response));
 
     setInterval(this.updateProjects.bind(this), 10000);
+  }
+
+  private onMessageReceived(message: IMessage): void {
+    console.log(message);
   }
 
   private async updateProjects(): Promise<void> {
@@ -165,6 +177,12 @@ class Kwork {
     }
 
     return resp;
+  }
+
+  public async getChannel(): Promise<string> {
+    const resp = await this.apiRequest('post', 'getChannel', { token: await this.token });
+
+    return resp.response.channel;
   }
 }
 
