@@ -1,3 +1,4 @@
+import util from 'util';
 import storage from 'node-persist';
 import { client, connection, IMessage } from 'websocket';
 import axios, { Method, AxiosInstance } from 'axios';
@@ -17,7 +18,7 @@ class Kwork {
   private _socket: client;
   private _lastProjects?: Project[];
 
-  public constructor(login: string, password: string, phone: string, proxy: string | undefined = undefined) {
+  public constructor(login: string, password: string, phone: string, proxy?: string) {
     this.login = login;
     this.password = password;
     this.phone = phone;
@@ -47,9 +48,9 @@ class Kwork {
     this._socket.on('connect', (connection: connection) => {
       connection.on('message', this.onMessageReceived.bind(this));
     });
-    this._socket.connect(`wss://notice.kwork.ru/ws/public/{this.getChannel()}`);
+    this._socket.connect('wss://notice.kwork.ru/ws/public/' + this.getChannel(), undefined, undefined, undefined, { agent: httpsAgent });
 
-    this.getProjects().then((x) => (this._lastProjects = x.response));
+    this.getProjects().then((x) => (this._lastProjects = x?.response));
 
     setInterval(this.updateProjects.bind(this), 10000);
   }
@@ -59,7 +60,7 @@ class Kwork {
   }
 
   private async updateProjects(): Promise<void> {
-    const currentProjects = (await this.getProjects()).response;
+    const currentProjects = (await this.getProjects())?.response;
 
     const lastProjects = this._lastProjects?.map((x) => x.id);
 
@@ -91,11 +92,15 @@ class Kwork {
   }
 
   public async apiRequest(requestMethod: Method, apiMethod: string, params?: unknown): Promise<any> {
-    const resp = await this._session.request({ method: requestMethod, url: apiMethod, params: params });
+    try {
+      const resp = await this._session.request({ method: requestMethod, url: apiMethod, params: params });
 
-    if (resp.status == 200) {
-      //console.log(resp.data);
-      return resp.data;
+      if (resp.status == 200) {
+        return resp.data;
+      }
+    } catch (er: any) {
+      console.log(er.message + ' ' + util.inspect({ apiMethod, params }));
+      //console.trace();
     }
 
     return null;
@@ -147,7 +152,10 @@ class Kwork {
     if ((resp.response.paging.pages ?? 0) > 1 && page == 0) {
       for (let i = 2; i <= resp.response.paging.pages; i++) {
         const newResp = await this.apiRequest('post', 'payerOrders', { token: await this.token, filter, page: i });
-        resp.response.push(...newResp.response);
+
+        if (newResp != null) {
+          resp.response.push(...newResp.response);
+        }
       }
     }
 
@@ -169,10 +177,13 @@ class Kwork {
   public async getProjects(categories: Int[] = [], page: Int = <Int>0): Promise<{ response?: Project[]; paging?: Pagination }> {
     const resp = await this.apiRequest('post', 'projects', { token: await this.token, categories: categories.join(','), page });
 
-    if (resp.paging.pages > 1 && page == 0) {
+    if (resp?.paging.pages > 1 && page == 0) {
       for (let i = 2; i <= resp.paging.pages; i++) {
         const newResp = await this.apiRequest('post', 'projects', { token: await this.token, categories: categories.join(','), page: i });
-        resp.response.push(...newResp.response);
+
+        if (newResp != null) {
+          resp.response.push(...newResp.response);
+        }
       }
     }
 

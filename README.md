@@ -24,7 +24,7 @@ npm install git+https://github.com/CrazyMan-IK/kwork-api.git
 const kwork = require('kwork-api');
 
 (async function () {
-	let kw = new kwork('login', 'password', '0000');
+  let kw = new kwork('login', 'password', '0000');
 
   let me = await kw.getMe();
   console.log(me);
@@ -42,7 +42,7 @@ Kwork может банить по ip, но в основном kwork-api пре
 const kwork = require('kwork-api');
 
 (async function () {
-	let kw = new kwork('login', 'password', '0000', 'socks5://localhost:9050');
+  let kw = new kwork('login', 'password', '0000', 'socks5://localhost:9050');
 
   let me = await kw.getMe();
   console.log(me);
