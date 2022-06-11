@@ -119,3 +119,4 @@ deploy.zsh
 build/
 test/
 kwork-api-storage/
+.vscode/
