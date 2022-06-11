@@ -11,6 +11,7 @@ class Kwork {
   public password: string;
   public phone: string;
 
+  private _onNewMessage: SimpleEventDispatcher<IMessage> = new SimpleEventDispatcher<IMessage>();
   private _onNewProject: SimpleEventDispatcher<Project> = new SimpleEventDispatcher<Project>();
 
   private _token?: string | null;
@@ -46,7 +47,7 @@ class Kwork {
 
     this._socket = new client();
     this._socket.on('connect', (connection: connection) => {
-      connection.on('message', this.onMessageReceived.bind(this));
+      connection.on('message', this.onNewMessage.bind(this));
     });
     this._socket.connect('wss://notice.kwork.ru/ws/public/' + this.getChannel(), undefined, undefined, undefined, { agent: httpsAgent });
 
@@ -55,8 +56,8 @@ class Kwork {
     setInterval(this.updateProjects.bind(this), 10000);
   }
 
-  private onMessageReceived(message: IMessage): void {
-    console.log(message);
+  private onNewMessage(message: IMessage): void {
+    this._onNewMessage.dispatch(message);
   }
 
   private async updateProjects(): Promise<void> {
@@ -74,6 +75,10 @@ class Kwork {
     }
 
     this._lastProjects = currentProjects;
+  }
+
+  public get onMessageReceived(): ISimpleEvent<IMessage> {
+    return this._onNewMessage.asEvent();
   }
 
   public get onNewProject(): ISimpleEvent<Project> {
