@@ -22,7 +22,7 @@ const kwork = require('kwork-api');
   let projs = await kw.getProjects(); //Получение текущих заказов на бирже
   console.log(projs);
 
-  //Подписка на оповещения о новых заказов на бирже
+  //Подписка на оповещения о новых заказах на бирже
   kw.onNewProject.subscribe((x) => {
     console.log(x);
   });
